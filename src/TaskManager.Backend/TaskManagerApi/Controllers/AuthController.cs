@@ -19,14 +19,16 @@ namespace TaskManagerApi.Controllers
         private readonly IMapper mapper;
         private readonly IAuthService authService;
         private readonly IConfiguration configuration;
+        private readonly ILogger<AuthController> logger;
         private readonly double expiryInDays;
 
-        public AuthController(IMapper mapper, IAuthService authService, IConfiguration configuration)
+        public AuthController(IMapper mapper, IAuthService authService, IConfiguration configuration, ILogger<AuthController> logger)
         {
             this.mapper = mapper;
             this.authService = authService;
             this.configuration = configuration;
             expiryInDays = double.Parse(configuration[Configuration.AUTH_REFRESH_TOKEN_EXPIRY_IN_DAYS]!);
+            this.logger = logger;
         }
 
         #region Endpoints
@@ -56,6 +58,7 @@ namespace TaskManagerApi.Controllers
             }
             return Created($"", null);
         }
+        [Log]
         [HttpPost("login")]
         public async Task<ActionResult<UserAuthenticationResponse>> Login([FromBody] UserAuthenticationRequest request)
         {
@@ -73,6 +76,7 @@ namespace TaskManagerApi.Controllers
             };
             return Ok(response);
         }
+        [Log]
         [Authorize]
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] UserUpdateDataRequest request)
@@ -88,6 +92,7 @@ namespace TaskManagerApi.Controllers
             }
             return Ok();
         }
+        [Log]
         [HttpPost("refresh")]
         public async Task<ActionResult<AuthToken>> Refresh([FromBody] AuthToken request)
         {

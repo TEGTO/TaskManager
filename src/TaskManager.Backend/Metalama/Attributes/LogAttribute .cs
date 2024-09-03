@@ -1,37 +1,79 @@
-﻿using Metalama.Extensions.DependencyInjection;
-using Metalama.Filters;
+﻿using Metalama.Filters;
 using Metalama.Framework.Aspects;
 using Metalama.Framework.Code;
 using Metalama.Framework.Code.SyntaxBuilders;
-using Metalama.Guards;
+using Metalama.Framework.Diagnostics;
+using Metalama.Framework.Eligibility;
 using Microsoft.Extensions.Logging;
 
 namespace Metalama.Attributes
 {
-#pragma warning disable CS8618, CS0649
-
-    public class LogAttribute : OverrideMethodAspect
+    public class LogAttribute : MethodAspect
     {
-        [IntroduceDependency] private readonly ILogger _logger;
+        private static readonly DiagnosticDefinition<INamedType> _missingLoggerFieldError =
+            new("LOG01", Severity.Error,
+                "The type '{0}' must have a field 'ILogger _logger' or a property 'ILogger Logger'.");
 
-        public override dynamic? OverrideMethod()
+        private static readonly DiagnosticDefinition<(DeclarationKind, IFieldOrProperty)>
+            _loggerFieldOrIncorrectTypeError =
+                new("LOG02", Severity.Error, "The {0} '{1}' must be of type ILogger.");
+
+        public override void BuildAspect(IAspectBuilder<IMethod> builder)
         {
+            var declaringType = builder.Target.DeclaringType;
+
+            // Finds a field named '_logger' or a property named 'Property'.
+            var loggerFieldOrProperty =
+                (IFieldOrProperty?)declaringType.AllFields.OfName("logger").SingleOrDefault() ??
+                declaringType.AllProperties.OfName("Logger").SingleOrDefault();
+
+            // Report an error if the field or property does not exist.
+            if (loggerFieldOrProperty == null)
+            {
+                builder.Diagnostics.Report(_missingLoggerFieldError.WithArguments(declaringType));
+
+                return;
+            }
+
+            // Verify the type of the logger field or property.
+            if (!loggerFieldOrProperty.Type.Is(typeof(ILogger)))
+            {
+                builder.Diagnostics.Report(
+                    _loggerFieldOrIncorrectTypeError.WithArguments((declaringType.DeclarationKind,
+                        loggerFieldOrProperty)));
+
+                return;
+            }
+
+            // Override the target method with our template. Pass the logger field or property to the template.
+            builder.Advice.Override(builder.Target, nameof(this.OverrideMethod),
+                new { loggerFieldOrProperty });
+        }
+
+        public override void BuildEligibility(IEligibilityBuilder<IMethod> builder)
+        {
+            base.BuildEligibility(builder);
+
+            // Now that we reference an instance field, we cannot log static methods.
+            builder.MustNotBeStatic();
+        }
+
+        [Template]
+        private dynamic? OverrideMethod(IFieldOrProperty loggerFieldOrProperty)
+        {
+            // Define a `logger` run-time variable and assign it to the ILogger field or property,
+            // e.g. `this._logger` or `this.Logger`.
+            var logger = (ILogger)loggerFieldOrProperty.Value!;
+
             // Determine if tracing is enabled.
-            var isTracingEnabled = this._logger.IsEnabled(LogLevel.Trace);
+            var isTracingEnabled = logger.IsEnabled(LogLevel.Trace);
 
             // Write entry message.
             if (isTracingEnabled)
             {
                 var entryMessage = BuildInterpolatedString(false);
                 entryMessage.AddText(" started.");
-
-                using (var guard = LoggingRecursionGuard.Begin())
-                {
-                    if (guard.CanLog)
-                    {
-                        this._logger.LogTrace((string)entryMessage.ToValue());
-                    }
-                }
+                LoggerExtensions.LogTrace(logger, entryMessage.ToValue());
             }
 
             try
@@ -67,31 +109,18 @@ namespace Metalama.Attributes
                         successMessage.AddText(".");
                     }
 
-                    using (var guard = LoggingRecursionGuard.Begin())
-                    {
-                        if (guard.CanLog)
-                        {
-                            this._logger.LogTrace((string)successMessage.ToValue());
-                        }
-                    }
+                    LoggerExtensions.LogTrace(logger, successMessage.ToValue());
                 }
 
                 return result;
             }
-            catch (Exception e) when (this._logger.IsEnabled(LogLevel.Warning))
+            catch (Exception e) when (logger.IsEnabled(LogLevel.Warning))
             {
                 // Display the failure message.
                 var failureMessage = BuildInterpolatedString(false);
                 failureMessage.AddText(" failed: ");
                 failureMessage.AddExpression(e.Message);
-
-                using (var guard = LoggingRecursionGuard.Begin())
-                {
-                    if (guard.CanLog)
-                    {
-                        this._logger.LogWarning((string)failureMessage.ToValue());
-                    }
-                }
+                LoggerExtensions.LogWarning(logger, failureMessage.ToValue());
 
                 throw;
             }

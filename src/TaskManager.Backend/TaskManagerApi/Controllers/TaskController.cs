@@ -18,12 +18,14 @@ namespace TaskManagerApi.Controllers
         private readonly ITaskService taskService;
         private readonly IAuthService authService;
         private readonly IMapper mapper;
+        private readonly ILogger<TaskController> logger;
 
-        public TaskController(ITaskService taskServicel, IAuthService authService, IMapper mapper)
+        public TaskController(ITaskService taskServicel, IAuthService authService, IMapper mapper, ILogger<TaskController> logger)
         {
             this.taskService = taskServicel;
             this.authService = authService;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         #region Endpoints

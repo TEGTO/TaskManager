@@ -19,10 +19,12 @@ namespace TaskManagerApi.Services
     public partial class TaskService : ITaskService
     {
         private readonly IDatabaseRepository<TaskManagerDbContext> databaseRepository;
+        private readonly ILogger<TaskService> logger;
 
-        public TaskService(IDatabaseRepository<TaskManagerDbContext> databaseRepository)
+        public TaskService(IDatabaseRepository<TaskManagerDbContext> databaseRepository, ILogger<TaskService> logger)
         {
             this.databaseRepository = databaseRepository;
+            this.logger = logger;
         }
 
         #region ITaskService Members

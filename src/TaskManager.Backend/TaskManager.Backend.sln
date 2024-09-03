@@ -13,7 +13,15 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{D9EC9949-3BA4-4646-A2FF-39F748336973}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metalama", "Metalama\Metalama.csproj", "{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metalama", "Metalama\Metalama.csproj", "{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{C1012839-358F-4F9E-96C0-E3182BC71031}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedTests", "..\..\test\TaskManager.Backend\SharedTests\SharedTests.csproj", "{7C70B785-36E2-4530-89A1-C8FC9C1978CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationTests", "..\..\test\TaskManager.Backend\AuthenticationTests\AuthenticationTests.csproj", "{27A23E2E-615B-4425-84C5-8F5624E49FA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagerApiTests", "..\..\test\TaskManager.Backend\TaskManagerApiTests\TaskManagerApiTests.csproj", "{422028D3-8EEF-4BE5-91EF-7F5F34CE2DAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +49,18 @@ Global
 		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C70B785-36E2-4530-89A1-C8FC9C1978CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C70B785-36E2-4530-89A1-C8FC9C1978CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C70B785-36E2-4530-89A1-C8FC9C1978CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C70B785-36E2-4530-89A1-C8FC9C1978CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27A23E2E-615B-4425-84C5-8F5624E49FA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27A23E2E-615B-4425-84C5-8F5624E49FA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27A23E2E-615B-4425-84C5-8F5624E49FA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27A23E2E-615B-4425-84C5-8F5624E49FA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{422028D3-8EEF-4BE5-91EF-7F5F34CE2DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{422028D3-8EEF-4BE5-91EF-7F5F34CE2DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{422028D3-8EEF-4BE5-91EF-7F5F34CE2DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{422028D3-8EEF-4BE5-91EF-7F5F34CE2DAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +69,9 @@ Global
 		{347A87D5-2664-47EA-A2E1-57FE02CFCDB9} = {552F4124-1F3A-4CB1-BE2C-0CC0106292BD}
 		{D9EC9949-3BA4-4646-A2FF-39F748336973} = {552F4124-1F3A-4CB1-BE2C-0CC0106292BD}
 		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41} = {552F4124-1F3A-4CB1-BE2C-0CC0106292BD}
+		{7C70B785-36E2-4530-89A1-C8FC9C1978CA} = {C1012839-358F-4F9E-96C0-E3182BC71031}
+		{27A23E2E-615B-4425-84C5-8F5624E49FA4} = {C1012839-358F-4F9E-96C0-E3182BC71031}
+		{422028D3-8EEF-4BE5-91EF-7F5F34CE2DAD} = {C1012839-358F-4F9E-96C0-E3182BC71031}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7344EAD7-E27D-4B28-865E-D8C16E44F4CE}

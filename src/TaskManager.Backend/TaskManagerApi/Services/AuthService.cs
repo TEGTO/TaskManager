@@ -13,11 +13,13 @@ namespace TaskManagerApi.Services
     {
         private readonly UserManager<User> userManager;
         private readonly ITokenHandler tokenHandler;
+        private readonly ILogger<AuthService> logger;
 
-        public AuthService(UserManager<User> userManager, ITokenHandler tokenHandler)
+        public AuthService(UserManager<User> userManager, ITokenHandler tokenHandler, ILogger<AuthService> logger)
         {
             this.userManager = userManager;
             this.tokenHandler = tokenHandler;
+            this.logger = logger;
         }
         #region IAuthService Members
 

@@ -16,12 +16,12 @@ namespace Shared.Repositories
         public async Task MigrateDatabaseAsync(CancellationToken cancellationToken)
         {
             var dbContext = await CreateDbContextAsync(cancellationToken);
-            await dbContext.Database.MigrateAsync();
+            await dbContext.Database.MigrateAsync(cancellationToken);
         }
         public async Task<T> AddAsync<T>(T obj, CancellationToken cancellationToken) where T : class
         {
             var dbContext = await CreateDbContextAsync(cancellationToken);
-            await dbContext.Set<T>().AddAsync(obj, cancellationToken);
+            await dbContext.AddAsync(obj, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
             return obj;
         }
@@ -39,7 +39,7 @@ namespace Shared.Repositories
         public async Task DeleteAsync<T>(T obj, CancellationToken cancellationToken) where T : class
         {
             var dbContext = await CreateDbContextAsync(cancellationToken);
-            dbContext.Set<T>().Remove(obj);
+            dbContext.Remove(obj);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
