@@ -12,7 +12,7 @@ namespace Metalama.Attributes
     {
         private static readonly DiagnosticDefinition<INamedType> _missingLoggerFieldError =
             new("LOG01", Severity.Error,
-                "The type '{0}' must have a field 'ILogger _logger' or a property 'ILogger Logger'.");
+                "The type '{0}' must have a field 'ILogger logger' or a property 'ILogger Logger'.");
 
         private static readonly DiagnosticDefinition<(DeclarationKind, IFieldOrProperty)>
             _loggerFieldOrIncorrectTypeError =
