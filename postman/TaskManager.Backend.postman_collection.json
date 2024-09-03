@@ -1,0 +1,611 @@
+{
+	"info": {
+		"_postman_id": "a4ee435f-cdca-46a4-bd69-cfb2067089dc",
+		"name": "TaskManagerApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32714822"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "users-register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assert that the response status code is either 200 or 400\r",
+									"pm.test(\"Response status code is 201 or 400\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 400]);\r",
+									"});\r",
+									"\r",
+									"// Default to unsuccessful registration\r",
+									"pm.environment.set(\"registration_success\", false);\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    pm.environment.set(\"registration_success\", true);\r",
+									"} else if (pm.response.code === 400) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    var messages = jsonResponse.messages || [];\r",
+									"\r",
+									"    var usernameTaken = messages.some(msg => msg.includes(\"Username 'example' is already taken.\"));\r",
+									"    var emailTaken = messages.some(msg => msg.includes(\"Email 'example@gmail.com' is already taken.\"));\r",
+									"\r",
+									"    pm.test(\"Username and Email are both already taken\", function () {\r",
+									"        pm.expect(usernameTaken || emailTaken).to.be.true;\r",
+									"    });\r",
+									"\r",
+									"    if (usernameTaken || emailTaken) {\r",
+									"        pm.environment.set(\"registration_success\", true);\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"example\",\r\n  \"email\": \"example@gmail.com\",\r\n  \"password\": \"123456;QWERTY\",\r\n  \"confirmPassword\": \"123456;QWERTY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/users/register",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users-login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"accessToken\", jsonResponse.authToken.accessToken);\r",
+									"    pm.environment.set(\"refreshToken\", jsonResponse.authToken.refreshToken);\r",
+									"    pm.environment.set(\"refreshTokenExpiryDate\", jsonResponse.authToken.refreshTokenExpiryDate);\r",
+									"    pm.environment.set(\"userName\", jsonResponse.userName);\r",
+									"    pm.environment.set(\"email\", jsonResponse.email);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var registrationSuccess = pm.environment.get(\"registration_success\");\r",
+									"if (!registrationSuccess) {\r",
+									"     console.error(\"Registration is failed!\")\r",
+									"    pm.execution.skipRequest();\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login\": \"example@gmail.com\",\r\n  \"password\": \"123456;QWERTY\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/users/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var token = pm.environment.get(\"accessToken\"); \r",
+									"\r",
+									"    pm.sendRequest({\r",
+									"        url: 'https://localhost:7130/auth/update',\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': 'Bearer ' + token \r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({\r",
+									"                \"userName\": \"example\",\r",
+									"                \"oldEmail\": \"example1@gmail.com\",\r",
+									"                \"newEmail\": \"example@gmail.com\",\r",
+									"                \"oldPassword\": \"123456;QWERTY\",\r",
+									"                \"newPassword\": \"\"\r",
+									"            })\r",
+									"        }\r",
+									"    }, function (err, rollbackRes) {\r",
+									"        if (err) {\r",
+									"            console.error('Rollback failed:', err);\r",
+									"            return;\r",
+									"        }\r",
+									"\r",
+									"        pm.test(\"Update rollback status code is 200\", function () {\r",
+									"            pm.expect(rollbackRes).to.have.status(200);\r",
+									"        });\r",
+									"    });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var registrationSuccess = pm.environment.get(\"registration_success\");\r",
+									"if (!registrationSuccess) {\r",
+									"     console.error(\"Registration is failed!\")\r",
+									"    pm.execution.skipRequest();\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"example\",\r\n  \"oldEmail\": \"example@gmail.com\",\r\n  \"newEmail\": \"example1@gmail.com\",\r\n  \"oldPassword\": \"123456QWERTY\",\r\n  \"newPassword\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/users/update",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"users",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users-refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"accessToken\", jsonResponse.accessToken);\r",
+									"    pm.environment.set(\"refreshToken\", jsonResponse.refreshToken);\r",
+									"    pm.environment.set(\"refreshTokenExpiryDate\", jsonResponse.refreshTokenExpiryDate);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var registrationSuccess = pm.environment.get(\"registration_success\");\r",
+									"if (!registrationSuccess) {\r",
+									"     console.error(\"Registration is failed!\")\r",
+									"    pm.execution.skipRequest();\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"accessToken\": \"{{accessToken}}\",\r\n  \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/users/refresh",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"users",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tasks",
+			"item": [
+				{
+					"name": "tasks-get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/tasks/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"tasks",
+								"{{taskId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tasks-get-tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/tasks?pageNumber=1&pageSize=1&status=0&dueDate=2055-08-07T14:30:45.4656254Z&priority=0",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "1"
+								},
+								{
+									"key": "status",
+									"value": "0"
+								},
+								{
+									"key": "dueDate",
+									"value": "2055-08-07T14:30:45.4656254Z"
+								},
+								{
+									"key": "priority",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tasks-create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 201) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"taskId\", jsonResponse.id);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"example\",\r\n  \"description\": \"example\",\r\n  \"status\": 0,\r\n  \"priority\": 0,\r\n    \"dueDate\":\"2055-08-07T14:30:45.4656254Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/tasks",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tasks-update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"newExample\",\r\n  \"description\": \"newExample\",\r\n  \"status\": 0,\r\n  \"priority\": 0,\r\n    \"dueDate\":\"2055-08-07T14:30:45.4656254Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/tasks/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"tasks",
+								"{{taskId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tasks-delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/tasks/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"tasks",
+								"{{taskId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

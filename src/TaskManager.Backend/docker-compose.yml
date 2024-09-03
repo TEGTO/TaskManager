@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  taskmanagerapi:
+    container_name: taskmanager-api
+    image: ${DOCKER_REGISTRY-}taskmanagerapi
+    build:
+      context: .
+      dockerfile: TaskManagerApi/Dockerfile
+    ports: 
+      - 7130:8081
+    networks:
+    - backend-net

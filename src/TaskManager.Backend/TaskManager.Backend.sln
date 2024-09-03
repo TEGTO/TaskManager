@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34916.146
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManagerApi", "TaskManagerApi\TaskManagerApi.csproj", "{4DFF628F-28C3-4DF7-B22D-6157BFB4A6E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{552F4124-1F3A-4CB1-BE2C-0CC0106292BD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication", "Authentication\Authentication.csproj", "{347A87D5-2664-47EA-A2E1-57FE02CFCDB9}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{8597910F-8371-4F09-A151-F603B17FDD91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{D9EC9949-3BA4-4646-A2FF-39F748336973}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metalama", "Metalama\Metalama.csproj", "{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DFF628F-28C3-4DF7-B22D-6157BFB4A6E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DFF628F-28C3-4DF7-B22D-6157BFB4A6E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DFF628F-28C3-4DF7-B22D-6157BFB4A6E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DFF628F-28C3-4DF7-B22D-6157BFB4A6E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{347A87D5-2664-47EA-A2E1-57FE02CFCDB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{347A87D5-2664-47EA-A2E1-57FE02CFCDB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{347A87D5-2664-47EA-A2E1-57FE02CFCDB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{347A87D5-2664-47EA-A2E1-57FE02CFCDB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8597910F-8371-4F09-A151-F603B17FDD91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8597910F-8371-4F09-A151-F603B17FDD91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8597910F-8371-4F09-A151-F603B17FDD91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8597910F-8371-4F09-A151-F603B17FDD91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9EC9949-3BA4-4646-A2FF-39F748336973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9EC9949-3BA4-4646-A2FF-39F748336973}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9EC9949-3BA4-4646-A2FF-39F748336973}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9EC9949-3BA4-4646-A2FF-39F748336973}.Release|Any CPU.Build.0 = Release|Any CPU
+		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{347A87D5-2664-47EA-A2E1-57FE02CFCDB9} = {552F4124-1F3A-4CB1-BE2C-0CC0106292BD}
+		{D9EC9949-3BA4-4646-A2FF-39F748336973} = {552F4124-1F3A-4CB1-BE2C-0CC0106292BD}
+		{911C8978-BB21-4C3B-A9C6-AD50B9B80D41} = {552F4124-1F3A-4CB1-BE2C-0CC0106292BD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7344EAD7-E27D-4B28-865E-D8C16E44F4CE}
+	EndGlobalSection
+EndGlobal

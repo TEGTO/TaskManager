@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.1</ProjectVersion>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <DockerPublishLocally>False</DockerPublishLocally>
+    <DockerComposeProjectName>taskmanager-backend</DockerComposeProjectName>
+    <ProjectGuid>8597910f-8371-4f09-a151-f603b17fdd91</ProjectGuid>
+    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+    <AdditionalComposeFilePaths>docker-compose-databases.yml;docker-compose-databases.override.yml;</AdditionalComposeFilePaths>
+    <DockerServiceName>taskmanagerapi</DockerServiceName>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include=".env" />
+    <None Include="docker-compose-databases.override.yml">
+      <DependentUpon>docker-compose-databases.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose-databases.yml" />
+    <None Include="docker-compose.override.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose.yml" />
+    <None Include=".dockerignore" />
+  </ItemGroup>
+</Project>
