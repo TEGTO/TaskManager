@@ -60,12 +60,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/users/register",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/users/register",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"users",
 								"register"
@@ -102,11 +103,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"var registrationSuccess = pm.environment.get(\"registration_success\");\r",
-									"if (!registrationSuccess) {\r",
-									"     console.error(\"Registration is failed!\")\r",
-									"    pm.execution.skipRequest();\r",
-									"}"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -126,12 +123,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/users/login",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/users/login",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"users",
 								"login"
@@ -190,12 +188,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/users/refresh",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/users/refresh",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"users",
 								"refresh"
@@ -290,12 +289,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/users/update",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/users/update",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"users",
 								"update"
@@ -351,12 +351,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/tasks/{{taskId}}",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/tasks/{{taskId}}",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"tasks",
 								"{{taskId}}"
@@ -407,12 +408,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/tasks?pageNumber=1&pageSize=1&status=0&dueDate=2055-08-07T14:30:45.4656254Z&priority=0",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/tasks?pageNumber=1&pageSize=1&status=0&dueDate=2055-08-07T14:30:45.4656254Z&priority=0",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"tasks"
 							],
@@ -486,12 +488,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/tasks",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/tasks",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"tasks"
 							]
@@ -538,12 +541,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/tasks/{{taskId}}",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/tasks/{{taskId}}",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"tasks",
 								"{{taskId}}"
@@ -591,12 +595,13 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7130/tasks/{{taskId}}",
+							"raw": "https://taskmanager-api-germanywestcentral-001.azurewebsites.net/tasks/{{taskId}}",
 							"protocol": "https",
 							"host": [
-								"localhost"
+								"taskmanager-api-germanywestcentral-001",
+								"azurewebsites",
+								"net"
 							],
-							"port": "7130",
 							"path": [
 								"tasks",
 								"{{taskId}}"
