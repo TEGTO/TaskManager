@@ -141,6 +141,70 @@
 					"response": []
 				},
 				{
+					"name": "users-refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonResponse = pm.response.json();\r",
+									"    pm.environment.set(\"accessToken\", jsonResponse.accessToken);\r",
+									"    pm.environment.set(\"refreshToken\", jsonResponse.refreshToken);\r",
+									"    pm.environment.set(\"refreshTokenExpiryDate\", jsonResponse.refreshTokenExpiryDate);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var registrationSuccess = pm.environment.get(\"registration_success\");\r",
+									"if (!registrationSuccess) {\r",
+									"     console.error(\"Registration is failed!\")\r",
+									"    pm.execution.skipRequest();\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"accessToken\": \"{{accessToken}}\",\r\n  \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7130/users/refresh",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"users",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "users-update",
 					"event": [
 						{
@@ -235,70 +299,6 @@
 							"path": [
 								"users",
 								"update"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "users-refresh",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"if (pm.response.code === 200) {\r",
-									"    var jsonResponse = pm.response.json();\r",
-									"    pm.environment.set(\"accessToken\", jsonResponse.accessToken);\r",
-									"    pm.environment.set(\"refreshToken\", jsonResponse.refreshToken);\r",
-									"    pm.environment.set(\"refreshTokenExpiryDate\", jsonResponse.refreshTokenExpiryDate);\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"var registrationSuccess = pm.environment.get(\"registration_success\");\r",
-									"if (!registrationSuccess) {\r",
-									"     console.error(\"Registration is failed!\")\r",
-									"    pm.execution.skipRequest();\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"accessToken\": \"{{accessToken}}\",\r\n  \"refreshToken\": \"{{refreshToken}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7130/users/refresh",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7130",
-							"path": [
-								"users",
-								"refresh"
 							]
 						}
 					},

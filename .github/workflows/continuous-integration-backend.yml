@@ -1,0 +1,67 @@
+name: Continuous Integration Backend
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/TaskManager.Backend/**'
+      - 'test/**'
+
+env:
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        test:
+          - name: "Authentication Tests"
+            project_path: "test/TaskManager.Backend/AuthenticationTests/AuthenticationTests.csproj"
+          - name: "Shared Tests"
+            project_path: "test/TaskManager.Backend/SharedTests/SharedTests.csproj"
+          - name: "Metalama Tests"
+            project_path: "test/TaskManager.Backend/MetalamaTests/MetalamaTests.csproj"
+          - name: "Task Manager Api Tests"
+            project_path: "test/TaskManager.Backend/TaskManagerApiTests/TaskManagerApiTests.csproj"
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache .NET packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Cache build output
+      uses: actions/cache@v3
+      with:
+        path: |
+          src/TaskManager.Backend/**/bin
+          src/TaskManager.Backend/**/obj
+          test/TaskManager.Backend/**/bin
+          test/TaskManager.Backend/**/obj
+        key: ${{ runner.os }}-build-${{ hashFiles('**/*.csproj') }}-${{ hashFiles('**/*.cs') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ hashFiles('**/*.csproj') }}
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ matrix.test.project_path }}
+
+    - name: Build project
+      run: dotnet build ${{ matrix.test.project_path }} --configuration Release
+
+    - name: Run tests - ${{ matrix.test.name }}
+      run: dotnet test ${{ matrix.test.project_path }} --verbosity normal --configuration Release
