@@ -54,6 +54,7 @@ namespace TaskManagerApi.Controllers.Tests
             var createdResult = result.Result as CreatedResult;
             Assert.That(createdResult.Location, Is.EqualTo($"/tasks/{userTask.Id}"));
             mockTaskService.Verify(ts => ts.CreateTaskAsync(It.IsAny<UserTask>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockAuthService.Verify(ts => ts.GetUserAsync(It.IsAny<ClaimsPrincipal>()), Times.Once);
         }
         [Test]
         public async Task GetTasks_ValidParams_ReturnsOkResult()
@@ -70,22 +71,25 @@ namespace TaskManagerApi.Controllers.Tests
             var okResult = result.Result as OkObjectResult;
             Assert.IsInstanceOf<IEnumerable<TaskResponse>>(okResult.Value);
             mockTaskService.Verify(ts => ts.GetTasksByUserIdAsync(It.IsAny<GetTasksByUserIdParams>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockAuthService.Verify(ts => ts.GetUserAsync(It.IsAny<ClaimsPrincipal>()), Times.Once);
         }
         [Test]
         public async Task GetTaskById_ValidId_ReturnsOkResult()
         {
             // Arrange
             var task = new UserTask { Id = Guid.NewGuid() };
-            mockTaskService.Setup(ts => ts.GetTaskByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(task);
+            mockAuthService.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(new User { Id = Guid.NewGuid() });
+            mockTaskService.Setup(ts => ts.GetTaskByIdAsync(It.IsAny<UserTaskParams>(), It.IsAny<CancellationToken>())).ReturnsAsync(task);
             mockMapper.Setup(m => m.Map<TaskResponse>(It.IsAny<UserTask>())).Returns(new TaskResponse { Id = task.Id });
             // Act
-            var result = await controller.GetTaskById(task.Id.ToString(), CancellationToken.None);
+            var result = await controller.GetTaskById(task.Id, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
             var okResult = result.Result as OkObjectResult;
             Assert.IsInstanceOf<TaskResponse>(okResult.Value);
             Assert.That(((TaskResponse)okResult.Value).Id, Is.EqualTo(task.Id));
-            mockTaskService.Verify(ts => ts.GetTaskByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockTaskService.Verify(ts => ts.GetTaskByIdAsync(It.IsAny<UserTaskParams>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockAuthService.Verify(ts => ts.GetUserAsync(It.IsAny<ClaimsPrincipal>()), Times.Once);
         }
         [Test]
         public async Task UpdateTask_ValidId_UpdatesTask()
@@ -99,19 +103,22 @@ namespace TaskManagerApi.Controllers.Tests
             var result = await controller.UpdateTask(task.Id, request, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkResult>(result);
-            mockTaskService.Verify(ts => ts.UpdateTaskAsync(It.IsAny<UserTask>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockTaskService.Verify(ts => ts.UpdateTaskAsync(It.IsAny<UserTaskParams>(), It.IsAny<UserTask>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockAuthService.Verify(ts => ts.GetUserAsync(It.IsAny<ClaimsPrincipal>()), Times.Exactly(2));
         }
         [Test]
         public async Task DeleteTaskById_ValidId_DeletesTask()
         {
             // Arrange
-            var taskId = Guid.NewGuid().ToString();
-            mockTaskService.Setup(ts => ts.DeleteTaskByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            var taskId = Guid.NewGuid();
+            mockAuthService.Setup(a => a.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(new User { Id = Guid.NewGuid() });
+            mockTaskService.Setup(ts => ts.DeleteTaskByIdAsync(It.IsAny<UserTaskParams>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
             // Act
             var result = await controller.DeleteTaskById(taskId, CancellationToken.None);
             // Assert
             Assert.IsInstanceOf<OkResult>(result);
-            mockTaskService.Verify(ts => ts.DeleteTaskByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockTaskService.Verify(ts => ts.DeleteTaskByIdAsync(It.IsAny<UserTaskParams>(), It.IsAny<CancellationToken>()), Times.Once);
+            mockAuthService.Verify(ts => ts.GetUserAsync(It.IsAny<ClaimsPrincipal>()), Times.Once);
         }
     }
 }

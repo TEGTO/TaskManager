@@ -62,9 +62,10 @@ namespace TaskManagerApi.Controllers
         }
         [Log]
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskResponse?>> GetTaskById(string id, CancellationToken cancellationToken)
+        public async Task<ActionResult<TaskResponse?>> GetTaskById(Guid id, CancellationToken cancellationToken)
         {
-            var task = await taskService.GetTaskByIdAsync(id, cancellationToken);
+            var param = new UserTaskParams(await GetUserIdAsync(), id);
+            var task = await taskService.GetTaskByIdAsync(param, cancellationToken);
             return Ok(mapper.Map<TaskResponse>(task));
         }
         [Log]
@@ -73,14 +74,16 @@ namespace TaskManagerApi.Controllers
         {
             var task = await GetTaskFromRequestAsync(request);
             task.Id = id;
-            await taskService.UpdateTaskAsync(task, cancellationToken);
+            var param = new UserTaskParams(await GetUserIdAsync(), id);
+            await taskService.UpdateTaskAsync(param, task, cancellationToken);
             return Ok();
         }
         [Log]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTaskById(string id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteTaskById(Guid id, CancellationToken cancellationToken)
         {
-            await taskService.DeleteTaskByIdAsync(id, cancellationToken);
+            var param = new UserTaskParams(await GetUserIdAsync(), id);
+            await taskService.DeleteTaskByIdAsync(param, cancellationToken);
             return Ok();
         }
 

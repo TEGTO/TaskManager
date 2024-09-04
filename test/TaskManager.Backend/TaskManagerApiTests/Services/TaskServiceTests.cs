@@ -70,7 +70,8 @@ namespace TaskManagerApi.Services.Tests
         {
             // Arrange
             var taskId = Guid.NewGuid();
-            var task = new UserTask { Id = taskId, Title = "Test Task" };
+            var userId = Guid.NewGuid();
+            var task = new UserTask { Id = taskId, UserId = userId, Title = "Test Task" };
             var tasks = new List<UserTask> { task }.AsQueryable();
 
             var dbSetMock = GetDbSetMock(tasks.AsQueryable());
@@ -78,7 +79,8 @@ namespace TaskManagerApi.Services.Tests
             databaseRepositoryMock.Setup(repo => repo.GetQueryableAsync<UserTask>(cancellationToken))
                 .ReturnsAsync(dbSetMock.Object);
             // Act
-            var result = await taskService.GetTaskByIdAsync(taskId.ToString(), cancellationToken);
+            var param = new UserTaskParams(userId, taskId);
+            var result = await taskService.GetTaskByIdAsync(param, cancellationToken);
             // Assert
             Assert.That(result, Is.EqualTo(task));
             databaseRepositoryMock.Verify(repo => repo.GetQueryableAsync<UserTask>(cancellationToken), Times.Once);
@@ -89,8 +91,9 @@ namespace TaskManagerApi.Services.Tests
         {
             // Arrange
             var taskId = Guid.NewGuid();
-            var existingTask = new UserTask { Id = taskId, Title = "Old Task" };
-            var updatedTask = new UserTask { Id = taskId, Title = "Updated Task" };
+            var userId = Guid.NewGuid();
+            var existingTask = new UserTask { Id = taskId, UserId = userId, Title = "Old Task" };
+            var updatedTask = new UserTask { Id = taskId, UserId = userId, Title = "Updated Task" };
             var tasks = new List<UserTask> { existingTask }.AsQueryable();
 
             var dbSetMock = GetDbSetMock(tasks.AsQueryable());
@@ -100,7 +103,8 @@ namespace TaskManagerApi.Services.Tests
             databaseRepositoryMock.Setup(repo => repo.UpdateAsync(existingTask, cancellationToken))
                 .Returns(Task.CompletedTask);
             // Act
-            await taskService.UpdateTaskAsync(updatedTask, cancellationToken);
+            var param = new UserTaskParams(userId, taskId);
+            await taskService.UpdateTaskAsync(param, updatedTask, cancellationToken);
             // Assert
             databaseRepositoryMock.Verify(repo => repo.GetQueryableAsync<UserTask>(cancellationToken), Times.Once);
             databaseRepositoryMock.Verify(repo => repo.UpdateAsync(existingTask, cancellationToken), Times.Once);
@@ -112,7 +116,8 @@ namespace TaskManagerApi.Services.Tests
         {
             // Arrange
             var taskId = Guid.NewGuid();
-            var task = new UserTask { Id = taskId, Title = "Test Task" };
+            var userId = Guid.NewGuid();
+            var task = new UserTask { Id = taskId, UserId = userId, Title = "Test Task" };
             var tasks = new List<UserTask> { task }.AsQueryable();
 
             var dbSetMock = GetDbSetMock(tasks.AsQueryable());
@@ -122,7 +127,8 @@ namespace TaskManagerApi.Services.Tests
             databaseRepositoryMock.Setup(repo => repo.DeleteAsync(task, cancellationToken))
                 .Returns(Task.CompletedTask);
             // Act
-            await taskService.DeleteTaskByIdAsync(taskId.ToString(), cancellationToken);
+            var param = new UserTaskParams(userId, taskId);
+            await taskService.DeleteTaskByIdAsync(param, cancellationToken);
             // Assert
             databaseRepositoryMock.Verify(repo => repo.GetQueryableAsync<UserTask>(cancellationToken), Times.Once);
             databaseRepositoryMock.Verify(repo => repo.DeleteAsync(task, cancellationToken), Times.Once);
