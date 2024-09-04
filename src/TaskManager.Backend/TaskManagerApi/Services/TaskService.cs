@@ -2,20 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Shared.Repositories;
 using TaskManagerApi.Data;
-using TaskManagerApi.Enums;
-using TaskStatus = TaskManagerApi.Enums.TaskStatus;
 using UserTask = TaskManagerApi.Domain.Entities.Task;
 
 namespace TaskManagerApi.Services
 {
-    public record class GetTasksByUserIdParams(
-        Guid UserId,
-        int PageNumber,
-        int PageSize,
-        TaskStatus? Status = null,
-        DateTime? DueDate = null,
-        TaskPriority? Priority = null);
-
     public partial class TaskService : ITaskService
     {
         private readonly IDatabaseRepository<TaskManagerDbContext> databaseRepository;
@@ -63,20 +53,26 @@ namespace TaskManagerApi.Services
             return tasks;
         }
         [Log]
-        public async Task<UserTask?> GetTaskByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task<UserTask?> GetTaskByIdAsync(UserTaskParams param, CancellationToken cancellationToken)
         {
             var taskQueryable = await databaseRepository.GetQueryableAsync<UserTask>(cancellationToken);
 
-            var task = await taskQueryable.FirstOrDefaultAsync(t => t.Id.ToString() == id, cancellationToken);
+            var task = await taskQueryable.FirstOrDefaultAsync(t =>
+            t.Id == param.TaskId &&
+            t.UserId == param.UserId,
+            cancellationToken);
 
             return task;
         }
         [Log]
-        public async Task UpdateTaskAsync(UserTask task, CancellationToken cancellationToken)
+        public async Task UpdateTaskAsync(UserTaskParams param, UserTask task, CancellationToken cancellationToken)
         {
             var taskQueryable = await databaseRepository.GetQueryableAsync<UserTask>(cancellationToken);
 
-            var taskIdDb = await taskQueryable.FirstOrDefaultAsync(t => t.Id == task.Id, cancellationToken);
+            var taskIdDb = await taskQueryable.FirstOrDefaultAsync(t =>
+            t.Id == param.TaskId &&
+            t.UserId == param.UserId,
+            cancellationToken);
             if (taskIdDb != null)
             {
                 taskIdDb.Copy(task);
@@ -84,11 +80,13 @@ namespace TaskManagerApi.Services
             }
         }
         [Log]
-        public async Task DeleteTaskByIdAsync(string id, CancellationToken cancellationToken)
+        public async Task DeleteTaskByIdAsync(UserTaskParams param, CancellationToken cancellationToken)
         {
             var taskQueryable = await databaseRepository.GetQueryableAsync<UserTask>(cancellationToken);
 
-            var task = await taskQueryable.FirstOrDefaultAsync(t => t.Id.ToString() == id, cancellationToken);
+            var task = await taskQueryable.FirstOrDefaultAsync(t =>
+            t.Id == param.TaskId &&
+            t.UserId == param.UserId, cancellationToken);
 
             if (task != null)
             {
