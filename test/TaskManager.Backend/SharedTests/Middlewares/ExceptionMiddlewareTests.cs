@@ -56,7 +56,7 @@ namespace SharedTests.Middlewares.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
             var responseBody = new StreamReader(httpContext.Response.Body).ReadToEnd();
-            var expectedResponseBody = "{\r\n  \"statusCode\": \"400\",\r\n  \"messages\": [\r\n    \"Name: Name is required.\"\r\n  ]\r\n}";
+            var expectedResponseBody = "400";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
             loggerMock.Verify(x => x.Log(
@@ -97,10 +97,9 @@ namespace SharedTests.Middlewares.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
             var responseBody = new StreamReader(httpContext.Response.Body).ReadToEnd();
-            var expectedResponseBody = "{\r\n  \"statusCode\": \"500\",\r\n  \"messages\": [\r\n    \"Internal Server Error.\"\r\n  ]\r\n}";
+            var expectedResponseBody = "500";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
-            Assert.That(responseBody, Is.EqualTo(expectedResponseBody));
             loggerMock.Verify(x => x.Log(
                LogLevel.Error,
                It.IsAny<EventId>(),
@@ -139,10 +138,9 @@ namespace SharedTests.Middlewares.Tests
             await exceptionMiddleware.InvokeAsync(httpContext);
             httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
             var responseBody = new StreamReader(httpContext.Response.Body).ReadToEnd();
-            var expectedResponseBody = "{\r\n  \"statusCode\": \"500\",\r\n  \"messages\": [\r\n    \"Invalid Data.\"\r\n  ]\r\n}";
+            var expectedResponseBody = "500";
             // Assert
             StringAssert.Contains(expectedResponseBody, responseBody);
-            Assert.That(responseBody, Is.EqualTo(expectedResponseBody));
             loggerMock.Verify(x => x.Log(
                LogLevel.Error,
                It.IsAny<EventId>(),

@@ -10,6 +10,7 @@ on:
 
 env:
   DOTNET_VERSION: '8.0.x'
+  MetalamaLicense: ${{ secrets.METALAMA_LICENSE_KEY }}
 
 jobs:
   build-and-deploy:
