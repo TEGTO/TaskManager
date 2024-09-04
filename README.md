@@ -2,10 +2,17 @@
 
 This is a full-stack web application for managing tasks, built using .NET for the backend and PostgreSQL for the database. The application features secure JWT-based authentication.
 
+### Running Locally
+To run the application locally:
+
+1. Add the `aspnetapp.pfx` certificate to the `src/TaskManager.Backend/TaskManagerApi/certificates` folder.
+2. Place the `.env` file in the `src/TaskManager.Backend` folder. [Download example .env file](https://drive.google.com/file/d/1NEuj7b5lsgqk0zx-oALrS4Bp8cmedziP/view?usp=sharing).
+3. Navigate to the `src/TaskManager.Backend` directory and run Docker Compose through TaskManager.Backend.sln.
+
 ### API URLs
 https://taskmanager-api-germanywestcentral-001.azurewebsites.net/
 
-## User API Endpoints Examples
+## User API Endpoint Examples
 
 ### Register
 ```bash
@@ -59,7 +66,7 @@ https://taskmanager-api-germanywestcentral-001.azurewebsites.net/
   "newPassword": ""
 }
 ```
-## Task API Endpoints Examples
+## Task API Endpoint Examples
 
 ### Get Task By Id
 ```bash
